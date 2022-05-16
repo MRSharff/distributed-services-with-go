@@ -1,0 +1,60 @@
+Logs are helpful to store, share, and process ordered data.
+
+Historically, logs were lines of text meant for human consumption, now they are
+often binary-encoded messages meant for other programs.
+
+Example use cases:
+- database replication
+    * database durability using Write-Ahead Log (WAL)
+- front-end app state management
+    * Redux logs changes as objects and handles them with pure functions that
+    apply updates to app state.
+- distributed service coordination
+    * Raft consensus algorithm uses a leader-follower where the leader appends
+    changes to its followers' logs.
+
+A complete log holds the latest state, and all states that have existed.
+
+
+A Log:
+- append only sequence of records
+- append to end (bottom)
+- read oldest to newest (top to bottom)
+- assigns new records a unique and sequential offset number, an ID.
+
+
+Concrete implementation:
+- deal with non-infinite disk space
+- split into segments
+- "active" segment is written to
+- oldest segments are processed by background processes (cleanup, archival, etc)
+
+
+Segment:
+- store file: where we store the record data (continually append records here)
+- index file:
+    * where we index each record in the store file
+    * speeds up reads
+    * maps record offsets to their position in the store file
+    * small (means we can memory-map them), makes operations on the file as fast as operating on in-memory data.
+
+
+Reading a record by offset:
+- 2 step process:
+    1. get entry from the index file for the record
+        * tells you the position of the record in the store file
+    2. read the record at that position in the store file.
+
+
+Memory Mapping:
+- a segment of virtual memory that has been assigned a direct byte-for-byte
+    correlation with some portion of a file or file-like resource.
+- TODO: Review this. I've forgotten so much from college.
+
+
+Terminology:
+- Record: the data stored in our log.
+- Store: the file we store records in.
+- Index: the file we store index entries in.
+- Segment: the abstraction that ties a store and an index together.
+- Log: the abstraction that ties all the segments together.
