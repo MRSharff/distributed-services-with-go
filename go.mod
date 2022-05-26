@@ -1,4 +1,4 @@
-module WriteALogPackage
+module github.com/MRSharff/distributed-services-with-go
 
 go 1.17
 
