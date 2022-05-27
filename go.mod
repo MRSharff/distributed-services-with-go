@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/stretchr/testify v1.7.1
 	github.com/tysonmote/gommap v0.0.1
+	google.golang.org/protobuf v1.28.0
 )
 
 require (

@@ -1,6 +1,7 @@
 package log
 
 import (
+	api "github.com/MRSharff/distributed-services-with-go/api/v1"
 	"github.com/stretchr/testify/require"
 	"io"
 	"io/ioutil"
@@ -12,7 +13,7 @@ func TestSegment(t *testing.T) {
 	dir, _ := ioutil.TempDir("", "segment-test")
 	defer os.RemoveAll(dir)
 
-	want := &Record{Value: []byte("hello world")}
+	want := &api.Record{Value: []byte("hello world")}
 
 	c := Config{}
 	c.Segment.MaxStoreBytes = 1024

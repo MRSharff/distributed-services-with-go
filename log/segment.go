@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path"
+
+	api "github.com/MRSharff/distributed-services-with-go/api/v1"
 )
 
 type segment struct {
@@ -63,7 +65,7 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 
 // Append writes the record to the segment and returns the newly appended
 // record's offset.
-func (s *segment) Append(record *Record) (offset uint64, err error) {
+func (s *segment) Append(record *api.Record) (offset uint64, err error) {
 	cur := s.nextOffset
 	record.Offset = cur
 	p, err := json.Marshal(record)
@@ -90,7 +92,7 @@ func (s *segment) Append(record *Record) (offset uint64, err error) {
 }
 
 // Read returns the record for the given offset.
-func (s *segment) Read(off uint64) (*Record, error) {
+func (s *segment) Read(off uint64) (*api.Record, error) {
 	relativeOffset := int64(off - s.baseOffset)
 	_, pos, err := s.index.Read(relativeOffset)
 	if err != nil {
@@ -101,7 +103,7 @@ func (s *segment) Read(off uint64) (*Record, error) {
 	if err != nil {
 		return nil, err
 	}
-	record := &Record{}
+	record := &api.Record{}
 	err = json.Unmarshal(p, record)
 	return record, err
 }

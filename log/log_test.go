@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+
+	api "github.com/MRSharff/distributed-services-with-go/api/v1"
 )
 
 func TestLog(t *testing.T) {
@@ -31,7 +33,7 @@ func TestLog(t *testing.T) {
 }
 
 func testAppendRead(t *testing.T, log *Log) {
-	rec := &Record{Value: []byte("hello world")}
+	rec := &api.Record{Value: []byte("hello world")}
 	off, err := log.Append(rec)
 	require.NoError(t, err)
 	require.Equal(t, uint64(0), off)
@@ -48,7 +50,7 @@ func testOutofRangeErr(t *testing.T, log *Log) {
 }
 
 func testInitExisting(t *testing.T, o *Log) {
-	rec := &Record{Value: []byte("hello world")}
+	rec := &api.Record{Value: []byte("hello world")}
 	for i := 0; i < 3; i++ {
 		_, err := o.Append(rec)
 		require.NoError(t, err)
@@ -73,7 +75,7 @@ func testInitExisting(t *testing.T, o *Log) {
 }
 
 func testReader(t *testing.T, log *Log) {
-	rec := &Record{Value: []byte("hello world")}
+	rec := &api.Record{Value: []byte("hello world")}
 	off, err := log.Append(rec)
 	require.NoError(t, err)
 	require.Equal(t, uint64(0), off)
@@ -82,14 +84,14 @@ func testReader(t *testing.T, log *Log) {
 	b, err := ioutil.ReadAll(reader)
 	require.NoError(t, err)
 
-	read := &Record{}
+	read := &api.Record{}
 	err = json.Unmarshal(b[lenWidth:], read)
 	require.NoError(t, err)
 	require.Equal(t, rec.Value, read.Value)
 }
 
 func testTruncate(t *testing.T, log *Log) {
-	rec := &Record{Value: []byte("hello world")}
+	rec := &api.Record{Value: []byte("hello world")}
 	for i := 0; i < 3; i++ {
 		_, err := log.Append(rec)
 		require.NoError(t, err)
